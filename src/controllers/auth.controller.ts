@@ -32,7 +32,7 @@ export const registerUser= async (req: Request, res: Response) => {
         console.log(accessToken);
         res.status(201).send({accessToken});
     }catch(err:any){
-        res.status(400).send(err.message);
+        res.status(400).send({message:err.message});
     }
 };
 
@@ -65,16 +65,16 @@ export const loginUser = async (req: Request, res: Response) => {
         });
     }
     catch(err:any){
-        res.status(400).send(err.message);
+        res.status(400).send({message:err.message});
     }
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
     try{
         res.clearCookie('refreshToken');
-        res.status(200).send('Logged out successfully');
+        res.status(200).send({message:'User logged out successfully'});
     }catch(err:any){
-        res.status(400).send(err.message);
+        res.status(400).send({message:err.message});
     }
 };
 
@@ -84,7 +84,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         console.log(refreshToken);
 
         if (!refreshToken) {
-            return res.status(400).send('Refresh token not found'); 
+            return res.status(400).send({ message: 'Refresh token not found' }); 
         }
 
         const decoded = verifyToken(refreshToken) as {
@@ -96,7 +96,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         const user = await findUserById(userId);
 
         if (!user || user.refreshToken !== refreshToken) {
-            return res.status(400).send('Invalid refresh token'); 
+            return res.status(400).send({ message: 'Invalid refresh token' }); 
         }
 
         const accessToken = generateToken(userId);
@@ -105,8 +105,8 @@ export const refreshToken = async (req: Request, res: Response) => {
     } catch (err: any) {
         console.error('Error refreshing token:', err); 
         if (err.message === 'Refresh token not found' || err.message === 'Invalid refresh token') {
-            return res.status(400).send(err.message); 
+            return res.status(400).send({message: err.message}); 
         }
-        return res.status(500).send('Internal server error'); 
+        return res.status(500).send({ message: 'Internal server error' }); 
     }
 };
