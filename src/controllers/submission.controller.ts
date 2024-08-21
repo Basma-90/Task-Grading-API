@@ -13,9 +13,14 @@ export const submitTaskController = async (req: Request, res: Response) => {
             graded: false
         });
 
+        console.log(validatedData);
+
         const submission = await submitTask(validatedData.student, validatedData.task, validatedData.fileUrl);
+
+        console.log('submission', submission);
         return res.status(201).send(submission);
     } catch (err: any) {
+        console.log(err);   
             return res.status(400).send({ errors: err.errors });
     }
 };
