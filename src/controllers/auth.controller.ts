@@ -1,16 +1,16 @@
 import { findUserById,findUserByEmail,createUser,updateUser } from "../services/user.services";
-import { Request, Response } from 'express';
+import { Request, Response ,NextFunction} from 'express';
 import { IUser } from '../models/user.model';
 import {userSchema} from'../schemas/user.schema';
 import {generateToken ,generateRefreshToken,verifyToken} from '../utils/jwt.utils';
 import bcrypt from 'bcrypt';
 
-export const registerUser= async (req: Request, res: Response) => {
+export const registerUser= async (req: Request, res: Response,next:NextFunction) => {
     try{
         const {name,email,password,role} = userSchema.parse(req.body);
         const userExists = await findUserByEmail(email);
         if(userExists){
-            throw new Error('User already exists');
+            return res.status(400).send({message:'User already exists'});
         }
         console.log(userExists);
         console.log(email);
@@ -32,20 +32,20 @@ export const registerUser= async (req: Request, res: Response) => {
         console.log(accessToken);
         res.status(201).send({accessToken});
     }catch(err:any){
-        res.status(400).send({message:err.message});
+        next(err);
     }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response,next:NextFunction) => {
     try{
         const {email,password} = userSchema.pick({email: true, password: true}).parse(req.body);
         const user = await findUserByEmail(email);
         if(!user){
-            throw new Error('User not found');
+            return res.status(400).send({message:'Invalid credentials'});
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
-            throw new Error('Invalid credentials');
+            return res.status(400).send({message:'Invalid credentials'});
         }
         const userId :string = user._id as string;
         const refreshToken = generateRefreshToken(userId);
@@ -65,20 +65,20 @@ export const loginUser = async (req: Request, res: Response) => {
         });
     }
     catch(err:any){
-        res.status(400).send({message:err.message});
+        next(err);
     }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (req: Request, res: Response,next:NextFunction) => {
     try{
         res.clearCookie('refreshToken');
         res.status(200).send({message:'User logged out successfully'});
     }catch(err:any){
-        res.status(400).send({message:err.message});
+        next(err);
     }
 };
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         console.log(refreshToken);
@@ -107,6 +107,6 @@ export const refreshToken = async (req: Request, res: Response) => {
         if (err.message === 'Refresh token not found' || err.message === 'Invalid refresh token') {
             return res.status(400).send({message: err.message}); 
         }
-        return res.status(500).send({ message: 'Internal server error' }); 
+        next(err);
     }
 };

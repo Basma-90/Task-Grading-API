@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { Request, Response ,NextFunction} from 'express';
 import { getGrade, gradeSubmission, getGrades } from '../services/grade.services';
 import { getStudent } from '../services/submission.services';
 import { gradeSchema } from '../schemas/grade.schema';
 import { z } from 'zod';
 
-export const gradeSubmissionController = async (req: Request, res: Response) => {
+export const gradeSubmissionController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const validatedData = gradeSchema.omit({gradedAt:true}).parse({
             submission: req.body.submissionId,
@@ -22,11 +22,11 @@ export const gradeSubmissionController = async (req: Request, res: Response) => 
         );
         return res.status(201).send(submission);
     } catch (err: any) {
-            return res.status(400).send({ message: err.message });
+            next(err);
     }
 }
 
-export const getGradeController = async (req: Request, res: Response) => {
+export const getGradeController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const submissionId = req.params.id;
         const studentId = req.body.studentId;
@@ -39,11 +39,11 @@ export const getGradeController = async (req: Request, res: Response) => {
         const grade = await getGrade(submissionId);
         return res.status(200).send(grade);
     } catch (err: any) {
-        return res.status(400).send({ message: err.message });
+        next(err);
     }
 }
 
-export const getGradesController = async (req: Request, res: Response) => {
+export const getGradesController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const teacher = req.params.id;
 
@@ -54,6 +54,6 @@ export const getGradesController = async (req: Request, res: Response) => {
         const grades = await getGrades(teacher);
         return res.status(200).send(grades);
     } catch (err: any) {
-        return res.status(400).send({ message: err.message });
+        next(err);
     }
 }

@@ -6,9 +6,8 @@ export const checkRole = async (req: Request, res: Response, next: NextFunction)
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' });
         }
-
         const decoded = verifyToken(accessToken) as {
             [x: string]: any; userId: string
         };
@@ -16,21 +15,21 @@ export const checkRole = async (req: Request, res: Response, next: NextFunction)
         const user = await findUserById(userId);
         console.log(user);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         if (user.role !== 'teacher') {
-            throw new Error('Unauthorized');
+            return res.status(403).send({ message: 'Unauthorized' });
         }
         next();
     } catch (err: any) {
-        res.status(400).send(err.message);
+        next(err);
     }
 }
 export const checkRoleStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' });
         }
 
         const decoded = verifyToken(accessToken) as {
@@ -40,14 +39,14 @@ export const checkRoleStudent = async (req: Request, res: Response, next: NextFu
         const user = await findUserById(userId);
         console.log(user);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         if (user.role !== 'student') {
-            throw new Error('Unauthorized');
+            return res.status(403).send({ message: 'Unauthorized' });
         }
         next();
     } catch (err: any) {
-        res.status(400).send(err.message);
+        next(err);
     }
 }
 
@@ -55,7 +54,7 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' }); 
         }
 
         const decoded = verifyToken(accessToken) as {
@@ -64,11 +63,11 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
         const userId: string = decoded.user.id as string;
         const user = await findUserById(userId);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         next();
     } catch (err: any) {
-        res.status(400).send(err.message);
+        next(err);
     }
 }
 
@@ -77,7 +76,7 @@ export const checkPermission = async (req: Request, res: Response, next: NextFun
 
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' });
         }
 
         const decoded = verifyToken(accessToken) as {
@@ -87,15 +86,15 @@ export const checkPermission = async (req: Request, res: Response, next: NextFun
         const user = await findUserById(userId);
         console.log(user);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         if (req.params.id !== userId) {
-            throw new Error('Unauthorized');
+            return res.status(403).send({ message: 'Unauthorized' });
         }
         next();
     }
     catch (err: any) {
-        res.status(400).send(err.message);
+        next(err);
     }
 }
 
@@ -103,7 +102,7 @@ export const getTeacherId = async (req: Request, res: Response, next: NextFuncti
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' });
         }
 
         const decoded = verifyToken(accessToken) as {
@@ -113,15 +112,15 @@ export const getTeacherId = async (req: Request, res: Response, next: NextFuncti
         console.log("c,",userId);
         const user = await findUserById(userId);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         if(user.role !== 'teacher'){
-            throw new Error('Unauthorized');
+            return res.status(403).send({ message: 'Unauthorized' });
         }
         req.body.teacherId = userId;
         next();
     } catch (err: any) {
-        res.status(400).send(err.message);
+        next(err);
     }
 }
 
@@ -129,7 +128,7 @@ export const getStudentId = async (req: Request, res: Response, next: NextFuncti
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
         if (!accessToken) {
-            throw new Error('Access token not found');
+            return res.status(401).send({ message: 'Access token not found' });
         }
 
         const decoded = verifyToken(accessToken) as {
@@ -138,14 +137,14 @@ export const getStudentId = async (req: Request, res: Response, next: NextFuncti
         const userId: string = decoded.user.id as string;
         const user = await findUserById(userId);
         if (!user) {
-            throw new Error('User not found');
+            return res.status(401).send({ message: 'User not found' });
         }
         if(user.role !== 'student'){
-            throw new Error('Unauthorized');
+            return res.status(403).send({ message: 'Unauthorized' });
         }
         req.body.studentId = userId;
         next();
     } catch (err: any) {
-        res.status(400).send(err.message);  
+        next(err);
     }
 }

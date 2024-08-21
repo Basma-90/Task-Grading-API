@@ -1,20 +1,20 @@
-import {Request ,Response} from 'express';
+import {Request ,Response,NextFunction} from 'express';
 import { findTaskByTitle,findTaskById,updateTask ,deleteTask,createTask,getTasks } from '../services/task.services';
 import { ITask } from '../models/task.model';
 import { taskSchema } from '../schemas/task.schema';
 import { ZodError } from 'zod';
 
-export const  addNewTask = async (req: Request, res: Response) => {
+export const  addNewTask = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const {title,description,deadline} = taskSchema.parse(req.body);
         const task: ITask = {title,description,deadline} as ITask;
         const newTask = await createTask(task);
         res.status(201).json(newTask);
     } catch (e:any) {
-        res.status(400).json({message: e.message});
+        next(e);
     }
 }
-export const getTaskById = async (req: Request, res: Response) => {
+export const getTaskById = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const id: string = req.params.id;
         console.log(id);
@@ -24,14 +24,11 @@ export const getTaskById = async (req: Request, res: Response) => {
         }
         res.status(200).json(task);
     } catch (e:any) {
-        if(e.message === 'Task not found'){
-            return res.status(404).json({message: e.message});
-        }
-        res.status(400).json({message: e.message});
+        next(e);
     }
 }
 
-export const getTaskByTitle = async (req: Request, res: Response) => {
+export const getTaskByTitle = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const title: string = req.params.title;
         const task = await findTaskByTitle(title);
@@ -43,11 +40,11 @@ export const getTaskByTitle = async (req: Request, res: Response) => {
         if(e.message === 'Task not found'){
             return res.status(404).json({message: e.message});
         }
-        res.status(400).json({message: e.message});
+        next(e);
     }
 }
 
-export const updateTaskById = async (req: Request, res: Response) => {
+export const updateTaskById = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const id: string = req.params.id;
         const { title, description, deadline } = taskSchema.parse(req.body);
@@ -64,12 +61,12 @@ export const updateTaskById = async (req: Request, res: Response) => {
         if(e.message === 'Task not found'){
             return res.status(404).json({message: e.message});
         }
-        res.status(500).json({ message: 'Internal server error' });
+        next(e);
     }
 };
 
 
-export const deleteTaskById = async (req: Request, res: Response) => {
+export const deleteTaskById = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const id: string = req.params.id;
         const deletedTask = await deleteTask(id);
@@ -78,16 +75,16 @@ export const deleteTaskById = async (req: Request, res: Response) => {
         if(e.message === 'Task not found'){
             return res.status(404).json({message: e.message});
         }
-        res.status(400).json({message: e.message});
+        next(e);
     }
 }
 
-export const getAllTasks = async (req: Request, res: Response) => { 
+export const getAllTasks = async (req: Request, res: Response,next:NextFunction) => { 
     try{
         const tasks = await getTasks();
         res.status(200).json(tasks);
     }
     catch(e:any){
-        res.status(400).json({message: e.message});
+        next(e);
     }
 }

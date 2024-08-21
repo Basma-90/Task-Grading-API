@@ -1,10 +1,10 @@
 import upload from "../utils/upload.utils";
-import { Request, Response } from "express";
+import { Request, Response ,NextFunction } from "express";
 import { submitTask, getSubmission, getStudent, viewSubmissions ,getSubmissionForTeacher } from "../services/submission.services";
 import { submissionSchema } from "../schemas/submission.schema";
 import { z } from 'zod';
 
-export const submitTaskController = async (req: Request, res: Response) => {
+export const submitTaskController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const validatedData = submissionSchema.omit({submittedAt:true}).parse({
             student: req.body.studentId,
@@ -21,11 +21,11 @@ export const submitTaskController = async (req: Request, res: Response) => {
         return res.status(201).send(submission);
     } catch (err: any) {
         console.log(err);   
-            return res.status(400).send({ errors: err.errors });
+            next(err);
     }
 };
 
-export const getSubmissionController = async (req: Request, res: Response) => {
+export const getSubmissionController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const submissionId = req.params.id;
         const studentId = req.body.studentId;
@@ -37,26 +37,26 @@ export const getSubmissionController = async (req: Request, res: Response) => {
         const submission = await getSubmission(submissionId);
         return res.status(200).send(submission);
     } catch (err: any) {
-        return res.status(400).send({ message: err.message });
+        next(err);
     }
 };
 
-export const getSubmissionForTeacherController = async (req: Request, res: Response) => {
+export const getSubmissionForTeacherController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const submissionId = req.params.id;
         const submission = await getSubmissionForTeacher(submissionId);
         return res.status(200).send(submission);
     } catch (err: any) {
-        return res.status(400).send({ message: err.message });
+        next(err);
     }
 };
 
-export const getSubmissionsController = async (req: Request, res: Response) => {
+export const getSubmissionsController = async (req: Request, res: Response,next:NextFunction) => {
     try {
         const taskId = req.params.id;
         const submissions = await viewSubmissions(taskId);
         return res.status(200).send(submissions);
     } catch (err: any) {
-        return res.status(400).send({ message: err.message });
+        next(err);
     }
 };
