@@ -61,7 +61,7 @@ describe('loginUser', () => {
             .post('/api/users/login')
             .send({ email: 'user@example.com', password: 'password' })
             .expect(400)
-            .expect({ message: 'User not found' });
+            .expect({ message: 'Invalid credentials' });
     }
 );
 
