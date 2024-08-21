@@ -10,6 +10,7 @@ import gradeRouter from './routes/grade.route';
 import { swaggerUi,swaggerDocs } from './swagger';
 import { zodErrorHandler } from './middlewares/zodErrorHandler';
 import { ErrorHandler } from './middlewares/errorHandler';
+import { multerErrorHandler } from './middlewares/multerErrorHandler';
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/tasks', taskRouter);
 app.use('/api/submissions', submissionRouter);
 app.use('/api/grades', gradeRouter);
 
+app.use(multerErrorHandler);
 app.use(zodErrorHandler);
 app.use(ErrorHandler);
 
