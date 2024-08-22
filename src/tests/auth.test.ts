@@ -35,7 +35,7 @@ describe('loginUser', () => {
             name: 'test',
             email: 'test@example.com',
             password: await bcrypt.hash('password', 10),
-            role: 'user',
+            role: 'student',
             refreshToken: ''
         };
 
@@ -71,7 +71,7 @@ it('should return 400 if password is incorrect', async () => {
         name: 'test',
         email: 'test@example.com',
         password: await bcrypt.hash('password', 10),
-        role: 'user',
+        role: 'student',
         refreshToken: ''
     };
         (findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
@@ -96,7 +96,7 @@ describe('registerUser', () => {
             name: 'test',
             email: 'test@example.com',
             password: await bcrypt.hash('password', 10),
-            role: 'user',
+            role: 'student',
             refreshToken: ''
         };
         (findUserByEmail as jest.Mock).mockResolvedValue(null);
@@ -105,7 +105,7 @@ describe('registerUser', () => {
         (generateRefreshToken as jest.Mock).mockReturnValue('refreshToken');
         mockUser.refreshToken = 'refreshToken';
         await supertest(server).post('/api/users/register')
-        .send({ name: 'test', email: 'test@example.com', password: 'password', role: 'user' })
+        .send({ name: 'test', email: 'test@example.com', password: 'password', role: 'student' })
         .expect(201)
         .expect({ accessToken: 'accessToken'});
     });
@@ -116,7 +116,7 @@ describe('registerUser', () => {
             name: 'test',
             email: 'test@example.com',
             password: await bcrypt.hash('password', 10),
-            role: 'user',
+            role: 'student',
             refreshToken: ''
         };
         (findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
@@ -124,7 +124,7 @@ describe('registerUser', () => {
         (generateToken as jest.Mock).mockReturnValue('accessToken');
         (generateRefreshToken as jest.Mock).mockReturnValue('refreshToken');
         await supertest(server).post('/api/users/register')
-        .send({ name: 'test', email: 'test@example.com', password: 'password', role: 'user' })
+        .send({ name: 'test', email: 'test@example.com', password: 'password', role: 'student' })
         .expect(400)
         .expect({ message: 'User already exists' });
     }
@@ -138,7 +138,7 @@ describe('refreshToken', () => {
             name: 'test',
             email: 'test@example.com',
             password: await bcrypt.hash('password', 10),
-            role: 'user',
+            role: 'student',
             refreshToken:''
         };
         (verifyToken as jest.Mock).mockReturnValue({ user: { id: '1' } });
@@ -176,7 +176,7 @@ describe('refreshToken', () => {
             name: 'test',
             email: 'test@example.com',
             password: await bcrypt.hash('password', 10),
-            role: 'user',
+            role: 'student',
             refreshToken:''
         };
         (verifyToken as jest.Mock).mockReturnValue({ user: { id: '1' } });
