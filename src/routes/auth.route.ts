@@ -5,7 +5,7 @@ const authRouter = Router();
 
 /**
  * @openapi
- * /auth/register:
+ * /api/users/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
@@ -29,6 +29,7 @@ const authRouter = Router();
  *                 type: string
  *               role:
  *                 type: string
+ *                 enum: [student, teacher]
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -39,7 +40,7 @@ authRouter.post('/register', registerUser);
 
 /**
  * @openapi
- * /auth/login:
+ * /api/users/login:
  *   post:
  *     summary: Log in a user
  *     tags: [Auth]
@@ -67,32 +68,58 @@ authRouter.post('/login', loginUser);
 
 /**
  * @openapi
- * /auth/logout:
+ * /api/users/refresh:
+ *   post:
+ *     summary: Refresh the access token
+ *     tags: [Auth]
+ *     description: Refreshes the access token using a refresh token stored in a cookie.
+ *     responses:
+ *       200:
+ *         description: Access token refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: The new access token
+ *       400:
+ *         description: Invalid or missing refresh token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message describing the issue
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message describing the issue
+ */
+
+authRouter.post('/refresh', refreshToken);
+
+/**
+ * @openapi
+ * /api/users/logout:
  *   post:
  *     summary: Log out a user
  *     tags: [Auth]
  *     responses:
  *       200:
  *         description: User logged out successfully
- *       400:
- *         description: Bad request
- */
-authRouter.post('/logout', logoutUser);
-
-/**
- * @openapi
- * /auth/refresh:
- *   post:
- *     summary: Refresh the access token
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: Token refreshed successfully
- *       400:
- *         description: Invalid refresh token
  *       500:
  *         description: Internal server error
  */
-authRouter.post('/refresh', refreshToken);
+authRouter.post('/logout', logoutUser);
 
 export default authRouter;

@@ -16,6 +16,13 @@ const swaggerOptions: swaggerJsDoc.Options = {
             },
         ],
         components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
             schemas: {
                 User: {
                     type: 'object',
@@ -36,6 +43,7 @@ const swaggerOptions: swaggerJsDoc.Options = {
                         role: {
                             type: 'string',
                             description: 'Role of the user',
+                            enum: ['student', 'teacher'],
                         },
                         refreshToken: {
                             type: 'string',

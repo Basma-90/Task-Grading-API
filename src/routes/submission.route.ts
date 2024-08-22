@@ -7,7 +7,7 @@ const submissionRouter = express.Router();
 
 /**
  * @openapi
- * /submit:
+ * /api/submissions/submit:
  *   post:
  *     summary: Submit a task
  *     tags: [Submission]
@@ -37,7 +37,7 @@ submissionRouter.post('/submit', checkAuth, checkRoleStudent, upload.single('fil
 
 /**
  * @openapi
- * /submission/{id}:
+ * /api/submissions/submission/{id}:
  *   get:
  *     summary: Get a specific submission by ID
  *     tags: [Submission]
@@ -62,7 +62,7 @@ submissionRouter.get('/submission/:id', checkAuth, checkRoleStudent, getStudentI
 
 /**
  * @openapi
- * /submissions/{id}:
+ * /api/submissions/submissions/{id}:
  *   get:
  *     summary: Get all submissions for a specific task by task ID
  *     tags: [Submission]
@@ -85,7 +85,7 @@ submissionRouter.get('/submissions/:id', checkAuth, checkRole, getSubmissionsCon
 
 /**
  * @openapi
- * /submission/teacher/{id}:
+ * /api/submissions/submission/teacher/{id}:
  *   get:
  *     summary: Get a specific submission for teachers by submission ID
  *     tags: [Submission]

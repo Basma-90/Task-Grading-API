@@ -6,7 +6,7 @@ const taskRouter = express.Router();
 
 /**
  * @openapi
- * /task:
+ * /api/tasks/task:
  *   post:
  *     summary: Add a new task
  *     tags: [Task]
@@ -40,7 +40,7 @@ taskRouter.post('/task', checkAuth, checkRole, addNewTask); // Teachers
 
 /**
  * @openapi
- * /task/{title}:
+ * /api/tasks/task/{title}:
  *   get:
  *     summary: Get a task by title
  *     tags: [Task]
@@ -65,7 +65,7 @@ taskRouter.get('/task/:title', checkAuth, getTaskByTitle);
 
 /**
  * @openapi
- * /task/{id}:
+ * /api/tasks/task/{id}:
  *   put:
  *     summary: Update a task by ID
  *     tags: [Task]
@@ -104,7 +104,7 @@ taskRouter.put('/task/:id', checkAuth, checkRole, updateTaskById); // Teachers
 
 /**
  * @openapi
- * /task/{id}:
+ * /api/tasks/task/{id}:
  *   delete:
  *     summary: Delete a task by ID
  *     tags: [Task]
@@ -129,7 +129,7 @@ taskRouter.delete('/task/:id', checkAuth, checkRole, deleteTaskById); // Teacher
 
 /**
  * @openapi
- * /tasks:
+ * /api/tasks/tasks:
  *   get:
  *     summary: Get all tasks
  *     tags: [Task]

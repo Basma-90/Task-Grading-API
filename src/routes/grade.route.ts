@@ -6,7 +6,7 @@ const gradeRouter = express.Router();
 
 /**
  * @openapi
- * /grade:
+ * /api/grades/grade:
  *   post:
  *     summary: Grade a submission
  *     tags: [Grade]
@@ -37,7 +37,7 @@ gradeRouter.post('/grade', checkAuth, checkRole, getTeacherId, gradeSubmissionCo
 
 /**
  * @openapi
- * /grade/{id}:
+ * /api/grades/grade/{id}:
  *   get:
  *     summary: Get a specific grade by submission ID
  *     tags: [Grade]
@@ -62,7 +62,7 @@ gradeRouter.get('/grade/:id', checkAuth, checkRoleStudent, getStudentId, getGrad
 
 /**
  * @openapi
- * /grades/{id}:
+ * /api/grades/grades/{id}:
  *   get:
  *     summary: Get all grades given by a specific teacher by teacher ID
  *     tags: [Grade]
